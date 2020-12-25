@@ -7,7 +7,6 @@ export class NoteProvider extends Component {
     note: [],
   };
   newNote = (item) => {
-    const { note } = this.state;
     this.setState({
       note: [...this.state.note, item],
     });

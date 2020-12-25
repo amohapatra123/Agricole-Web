@@ -80,6 +80,7 @@ body {
   display: flex;
   justify-content: center;
   margin-top: 5rem;
+  height: 100vmin;
 }
 #notice {
   width: 80%;
