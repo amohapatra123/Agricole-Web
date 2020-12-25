@@ -26,6 +26,18 @@ export const data = {
     },
   ],
 };
+export const data1 = {
+  labels: ["27", "28", "1", "2", "3", "4"],
+  datasets: [
+    {
+      label: "",
+      data: [120, 200, 140, 370, 210, 300],
+      fill: true,
+      backgroundColor: " #00ff11a1",
+      borderColor: "#34A853",
+    },
+  ],
+};
 
 export const options = {
   scales: {
