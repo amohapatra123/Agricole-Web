@@ -5,7 +5,8 @@ import firebase from "../../firebase";
 export default function UserLogin(props) {
   const [number, setNumber] = useState("");
   const [err, setErr] = useState(false);
-  const handleSend = () => {
+  const handleSend = (e) => {
+    e.preventDefault();
     let recaptchaVerifier = new firebase.auth.RecaptchaVerifier("recap", {
       size: "invisible",
     });
@@ -15,7 +16,7 @@ export default function UserLogin(props) {
       .signInWithPhoneNumber(phone, recaptchaVerifier)
       .then((e) => {
         if (e.verificationId) {
-          let code = prompt("enter otp");
+          let code = window.prompt("enter otp");
           e.confirm(code)
             .then((res) => {
               console.log("logged in");
