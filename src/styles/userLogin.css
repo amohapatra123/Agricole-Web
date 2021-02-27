@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
+.main-login {
+  height: 100vh;
+  background-image: url("../assets/bg2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-div-user {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: auto;
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+}
+.title-user {
+  margin-top: 10px;
+  text-align: center;
+  color: white;
+  font-size: 40px;
+  font-weight: 500;
+  font-family: "Fredoka One", cursive;
+}
+.label-user {
+  font-size: 30px;
+  font-weight: 500;
+}
+.button-user {
+  background-color: black;
+  border: none;
+  outline: none;
+  font-size: 20px;
+  font-weight: 400;
+}
