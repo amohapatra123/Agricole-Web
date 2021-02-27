@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { Row, Col } from "reactstrap";
 import "../../styles/dash.css";
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
@@ -10,7 +9,10 @@ export default function Dashboard() {
   return (
     <div className="main-dash">
       <div style={{ marginLeft: open ? "0px" : "-200px" }} className="sidebar">
-        <div>PlantMedic</div>
+        <div>
+          PlantMedic{shop}
+          {search}
+        </div>
         <ul>
           <li
             onClick={() => {
@@ -65,6 +67,7 @@ const Detect = () => {
   };
   return (
     <div className="detect-main">
+      <img src={photo ? photo : null} alt="plant" />
       <div className="detect-upload" onClick={() => input.current.click()}>
         <div>
           <img
