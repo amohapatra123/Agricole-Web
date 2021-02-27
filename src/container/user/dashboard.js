@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import "../../styles/dash.css";
+import { Row, Col } from "reactstrap";
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [detect, setDetect] = useState(true);
@@ -9,10 +10,7 @@ export default function Dashboard() {
   return (
     <div className="main-dash">
       <div style={{ marginLeft: open ? "0px" : "-200px" }} className="sidebar">
-        <div>
-          PlantMedic{shop}
-          {search}
-        </div>
+        <div>PlantMedic</div>
         <ul>
           <li
             onClick={() => {
@@ -53,7 +51,11 @@ export default function Dashboard() {
             onClick={() => setOpen(!open)}
           />
         </div>
-        <div className="main-dash-inner">{detect ? <Detect /> : null}</div>
+        <div className="main-dash-inner">
+          {detect ? <Detect /> : null}
+          {shop ? <Explore /> : null}
+          {search ? <Search /> : null}
+        </div>
       </div>
     </div>
   );
@@ -62,23 +64,179 @@ export default function Dashboard() {
 const Detect = () => {
   const input = useRef(null);
   const [photo, setPhoto] = useState(null);
+  const [uploaded, setUploaded] = useState(false);
   const handleUpload = (e) => {
-    setPhoto(e.target.files[0]);
+    let name;
+    if (e) {
+      setTimeout(() => {
+        name = URL.createObjectURL(e.target.files[0]);
+        setPhoto(name);
+        setUploaded(true);
+      }, 2000);
+    }
   };
   return (
     <div className="detect-main">
-      <img src={photo ? photo : null} alt="plant" />
-      <div className="detect-upload" onClick={() => input.current.click()}>
-        <div>
-          <img
-            src="https://img.icons8.com/officel/80/000000/upload.png"
-            alt="upload"
-            width="50px"
-          />
+      {photo ? <img src={photo} alt="plant" className="detect-image" /> : null}
+      {uploaded ? (
+        <div className="detect">Detect</div>
+      ) : (
+        <div className="detect-upload" onClick={() => input.current.click()}>
+          <div>
+            <img
+              src="https://img.icons8.com/officel/80/000000/upload.png"
+              alt="upload"
+              width="50px"
+            />
+          </div>
+          <input type="file" hidden ref={input} onChange={handleUpload} />
+          <div className="upload-text">Upload Image</div>
         </div>
-        <input type="file" hidden ref={input} onChange={handleUpload} />
-        <div className="upload-text">Upload Image</div>
-      </div>
+      )}
     </div>
   );
+};
+
+class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      wikiSearchReturnValues: [],
+      wikiSearchTerms: "",
+    };
+  }
+
+  useWikiSearchEngine = (e) => {
+    e.preventDefault();
+
+    this.setState({
+      wikiSearchReturnValues: [],
+    });
+
+    const pointerToThis = this;
+
+    var url = "https://en.wikipedia.org/w/api.php";
+
+    var params = {
+      action: "query",
+      list: "search",
+      srsearch: this.state.WikiSearchTerms,
+      format: "json",
+    };
+
+    url = url + "?origin=*";
+    Object.keys(params).forEach((key) => {
+      url += "&" + key + "=" + params[key];
+    });
+
+    fetch(url)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (response) {
+        // console.log(response);
+
+        for (var key in response.query.search) {
+          pointerToThis.state.wikiSearchReturnValues.push({
+            queryResultPageFullURL: "no link",
+            queryResultPageID: response.query.search[key].pageid,
+            queryResultPageTitle: response.query.search[key].title,
+            queryResultPageSnippet: response.query.search[key].snippet,
+          });
+        }
+      })
+      .then(function (response) {
+        for (var key2 in pointerToThis.state.wikiSearchReturnValues) {
+          // console.log(pointerToThis.state.wikiSearchReturnValues);
+          let page = pointerToThis.state.wikiSearchReturnValues[key2];
+          let pageID = page.queryResultPageID;
+          let urlForRetrievingPageURLByPageID = `https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=info&pageids=${pageID}&inprop=url&format=json`;
+
+          fetch(urlForRetrievingPageURLByPageID)
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (response) {
+              page.queryResultPageFullURL =
+                response.query.pages[pageID].fullurl;
+
+              pointerToThis.forceUpdate();
+            });
+        }
+      });
+  };
+
+  changeWikiSearchTerms = (e) => {
+    this.setState({
+      WikiSearchTerms: e.target.value,
+    });
+  };
+
+  render() {
+    let wikiSearchResults = [];
+    // console.log(this.state.wikiSearchReturnValues);
+
+    for (var key3 in this.state.wikiSearchReturnValues) {
+      wikiSearchResults.push(
+        <div className="searchResultDiv" key={key3}>
+          <h3>
+            <a
+              href={
+                this.state.wikiSearchReturnValues[key3].queryResultPageFullURL
+              }
+            >
+              {this.state.wikiSearchReturnValues[key3].queryResultPageTitle}
+            </a>
+          </h3>
+          <span className="link">
+            <a
+              href={
+                this.state.wikiSearchReturnValues[key3].queryResultPageFullURL
+              }
+            >
+              {this.state.wikiSearchReturnValues[key3].queryResultPageFullURL}
+            </a>
+          </span>
+          <p
+            className="description"
+            dangerouslySetInnerHTML={{
+              __html: this.state.wikiSearchReturnValues[key3]
+                .queryResultPageSnippet,
+            }}
+          ></p>
+        </div>
+      );
+    }
+
+    console.log(wikiSearchResults);
+
+    return (
+      <Row className="search-main">
+        <Col xs={{ size: 12 }} md={{ size: 6, offset: 2 }} className="mb-3">
+          <input
+            type="text"
+            value={this.state.WikiSearchTerms || ""}
+            onChange={this.changeWikiSearchTerms}
+            placeholder="Search"
+            className="input-search"
+          />
+        </Col>
+        <Col xs={{ size: 12 }} md={{ size: 3 }} className="mb-3">
+          <div className="search-button" onClick={this.useWikiSearchEngine}>
+            Search
+          </div>
+        </Col>
+        <Col
+          xs={{ size: 12 }}
+          md={{ size: 10, offset: 2 }}
+          className="search-result"
+        >
+          {wikiSearchResults}
+        </Col>
+      </Row>
+    );
+  }
+}
+const Explore = () => {
+  return <div>Explore</div>;
 };
