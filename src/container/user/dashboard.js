@@ -77,26 +77,14 @@ export default function Dashboard(props) {
 }
 
 const Detect = () => {
-  const input = useRef(null);
-  const [photo, setPhoto] = useState(null);
-  const [uploaded, setUploaded] = useState(false);
-  const handleUpload = (e) => {
-    let name;
-    if (e) {
-      setTimeout(() => {
-        name = URL.createObjectURL(e.target.files[0]);
-        setPhoto(name);
-        setUploaded(true);
-      }, 2000);
-    }
-  };
   return (
-    <div className="detect-main">
-      {photo ? <img src={photo} alt="plant" className="detect-image" /> : null}
-      {uploaded ? (
-        <div className="detect">Detect</div>
-      ) : (
-        <div className="detect-upload" onClick={() => input.current.click()}>
+    <a
+      href="http://localhost:7777/predict"
+      target="blank"
+      style={{ textDecoration: "none", color: "unset" }}
+    >
+      <div className="detect-main">
+        <div className="detect-upload">
           <div>
             <img
               src="https://img.icons8.com/officel/80/000000/upload.png"
@@ -104,11 +92,11 @@ const Detect = () => {
               width="50px"
             />
           </div>
-          <input type="file" hidden ref={input} onChange={handleUpload} />
+
           <div className="upload-text">Upload Image</div>
         </div>
-      )}
-    </div>
+      </div>
+    </a>
   );
 };
 
