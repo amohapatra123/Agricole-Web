@@ -1,10 +1,13 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Loader from "./components/loader";
 import { routes } from "./routes/routes";
 
 function App() {
+  useState(() => {
+    sessionStorage.setItem("auth", false);
+  });
   const routcomponent = routes.map(({ path, component, id }) => (
     <Route exact path={path} component={component} key={id} />
   ));

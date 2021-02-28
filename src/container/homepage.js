@@ -8,7 +8,14 @@ export default function homepage(props) {
         <div className="title">PlantMedic</div>
         <div className="question">Are you a ?</div>
         <Row className="buttons">
-          <Col xs={{ size: 12 }} md={{ size: 3 }} className="shop">
+          <Col
+            xs={{ size: 12 }}
+            md={{ size: 3 }}
+            className="shop"
+            onClick={() => {
+              props.history.push("/shopkeeper/register");
+            }}
+          >
             Shopkeeper
           </Col>
 

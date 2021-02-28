@@ -11,6 +11,7 @@ export default function UserLogin(props) {
       size: "invisible",
     });
     let phone = `+91${number}`;
+
     firebase
       .auth()
       .signInWithPhoneNumber(phone, recaptchaVerifier)
@@ -20,6 +21,7 @@ export default function UserLogin(props) {
           e.confirm(code)
             .then((res) => {
               console.log("logged in");
+              sessionStorage.setItem("auth", true);
               props.history.push("/user/dashboard");
             })
             .catch((err) => {

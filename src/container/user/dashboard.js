@@ -1,12 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../../styles/dash.css";
 import { Row, Col } from "reactstrap";
-export default function Dashboard() {
+import firebase from "../../firebase";
+export default function Dashboard(props) {
   const [open, setOpen] = useState(false);
   const [detect, setDetect] = useState(true);
   const [shop, setShop] = useState(false);
   const [search, setSearch] = useState(false);
 
+  useEffect(() => {
+    if (sessionStorage.getItem("auth")) {
+      return;
+    } else {
+      props.history.push("/");
+    }
+  });
   return (
     <div className="main-dash">
       <div style={{ marginLeft: open ? "0px" : "-200px" }} className="sidebar">
@@ -39,7 +47,14 @@ export default function Dashboard() {
           >
             Search
           </li>
-          <li>Logout</li>
+          <li
+            onClick={() => {
+              sessionStorage.setItem("auth", false);
+              props.history.push("/");
+            }}
+          >
+            Logout
+          </li>
         </ul>
       </div>
       <div>
@@ -238,5 +253,65 @@ class Search extends React.Component {
   }
 }
 const Explore = () => {
-  return <div>Explore</div>;
+  const [query, setQuery] = useState("");
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    firebase
+      .database()
+      .ref("shops")
+      .on("value", (s) => {
+        let list = [];
+        s.forEach((snap) => {
+          list.push(snap.val());
+        });
+        setData(list);
+      });
+  }, [query]);
+  return (
+    <div className="shop-main">
+      <div>
+        <input
+          type="text"
+          name="query"
+          value={query}
+          placeholder="Search shop by city"
+          onChange={(e) => setQuery(e.target.value)}
+          className="shop-search"
+        />
+      </div>
+
+      {data.length > 0 ? (
+        <>
+          {data
+            .filter((item) => item.city.toLowerCase() === query.toLowerCase())
+            .map((item) => {
+              return (
+                <div className="shop-card">
+                  <div>
+                    <strong>Shop Name:</strong>
+                    {item.name}
+                  </div>
+                  <div>
+                    <strong>Phone Number:</strong>
+                    {item.number}
+                  </div>
+                  <div>
+                    <strong>Email:</strong>
+                    {item.email}
+                  </div>
+                  <div>
+                    <strong>Area:</strong>
+                    {item.area}
+                  </div>
+                  <div>
+                    <strong>Pincode:</strong>
+                    {item.pin}
+                  </div>
+                </div>
+              );
+            })}
+        </>
+      ) : null}
+    </div>
+  );
 };
