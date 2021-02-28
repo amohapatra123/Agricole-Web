@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/dash.css";
 import { Row, Col } from "reactstrap";
 import firebase from "../../firebase";
