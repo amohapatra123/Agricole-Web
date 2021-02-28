@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../styles/dash.css";
 import { Row, Col } from "reactstrap";
 import firebase from "../../firebase";
+import logo from "../../assets/logo.png";
 export default function Dashboard(props) {
   const [open, setOpen] = useState(false);
   const [detect, setDetect] = useState(true);
@@ -58,13 +59,27 @@ export default function Dashboard(props) {
         </ul>
       </div>
       <div>
-        <div style={{ marginTop: "10px", cursor: "pointer" }}>
-          <img
-            src="https://img.icons8.com/carbon-copy/100/000000/menu.png"
-            alt="menu"
-            width="50px"
-            onClick={() => setOpen(!open)}
-          />
+        <div
+          style={{
+            marginTop: "10px",
+            cursor: "pointer",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <img
+              src="https://img.icons8.com/carbon-copy/100/000000/menu.png"
+              alt="menu"
+              width="50px"
+              onClick={() => setOpen(!open)}
+            />
+          </div>
+          <div>
+            <img src={logo} alt="logo" width="50px" />
+          </div>
         </div>
         <div className="main-dash-inner">
           {detect ? <Detect /> : null}
